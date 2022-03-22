@@ -2,6 +2,7 @@ import 'package:app_thuchi/pages/list_product.dart';
 import 'package:flutter/material.dart';
 import 'package:app_thuchi/pages/home.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -49,7 +50,7 @@ class Home extends GetWidget {
       imageSrc: "assets/charity.png",
       text: "Thu Chi",
       textType: TextType.ColorizeAnimationText,
-      textStyle: const TextStyle(
+      textStyle: GoogleFonts.mcLaren(
         fontSize: 40.0,
       ),
       colors: const [

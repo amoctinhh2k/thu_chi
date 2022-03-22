@@ -6,46 +6,83 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'item_profile.dart';
 
-class ProductUpdate extends StatelessWidget {
-  // late final String date1;
-  String date = "";
-  String _date = "";
+class ProductUpdate extends StatefulWidget {
   final Product product;
-  final TextEditingController _namecontroller = TextEditingController();
-  final TextEditingController _pricecontroller = TextEditingController();
 
-  ProductUpdate({required this.product}) {
-    _namecontroller.text = product.name;
-    _pricecontroller.text = product.price;
-    date = product.date;
+  ProductUpdate({required this.product}) {}
+
+  @override
+  ProductUpdateState createState() {
+    return new ProductUpdateState();
+  }
+}
+
+class ProductUpdateState extends State<ProductUpdate> {
+  late BankListDataModel _bankChoose;
+  String? date;
+  String? _date, _name, _logo;
+  TextEditingController _noteController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
+
+  void initState() {
+    super.initState();
+    // _bankChoose = BankListDataModel('', '');
+    print("llllllllll" + widget.product.logo);
+    _noteController.text = widget.product.note;
+    _priceController.text = widget.product.price;
+    date = widget.product.date;
     _date = date;
-    print("pppppppppppppp" + date);
+    _name = widget.product.name;
+    _logo = widget.product.logo;
+    // _bankChoose = bankDataList[0];
+    _bankChoose = BankListDataModel(widget.product.name, widget.product.logo);
+    Future.delayed(700.milliseconds, () {
+      setState(() {
+        _bankChoose = BankListDataModel(widget.product.name, widget.product.logo);
+      });
+    });
   }
 
-  changeNm(String value) {
+  void _onDropDownItemSelected(BankListDataModel newSelectedBank) {
+    setState(() {
+      _bankChoose = newSelectedBank;
+    });
+  }
+
+  changeDate(String value) {
     _date = value;
-    print("kkkk" + _date);
+    print("kkkk" + _date!);
+  }
+
+  changeProduct(BankListDataModel product) {
+    _name = product.bank_name;
+    _logo = product.bank_logo;
+    print("logo");
   }
 
   _onSubmittedHandler(BuildContext context) {
-    String name = _namecontroller.text.trim();
-    String price = _pricecontroller.text.trim();
-    if (name == product.name &&
-        price == product.price &&
-        _date == product.date) {
-      Navigator.of(context).pop(product);
+    String note = _noteController.text.trim();
+    String price = _priceController.text.trim();
+
+    if (_name == widget.product.name &&
+        price == widget.product.price &&
+        _date == widget.product.date &&
+        _logo == widget.product.logo &&
+        note == widget.product.note) {
+      Navigator.of(context).pop(widget.product);
     } else {
-      product.name = name;
-      product.price = price;
-      product.date = _date;
+      widget.product.name = _name!;
+      widget.product.price = price;
+      widget.product.date = _date!;
+      widget.product.logo = _logo!;
+      widget.product.note = note;
       FrappeAlert.warnAlert(
         title: "Thông báo",
         subtitle: 'Cập nhật thành công !',
         context: context,
       );
-      Navigator.of(context).pop(product);
+      Navigator.of(context).pop(widget.product);
     }
   }
 
@@ -53,19 +90,71 @@ class ProductUpdate extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListBody(
       children: <Widget>[
-        TextField(
-          // autocorrect: true,
-          // autofocus: true,
-          enableSuggestions: true,
-          textCapitalization: TextCapitalization.sentences,
-          controller: _namecontroller,
-          keyboardType: TextInputType.text,
-          textInputAction: TextInputAction.send,
-          maxLines: null,
-          // onSubmitted: (_) => _onSubmittedHandler(context),
-          decoration: InputDecoration(
-              labelText: "Vật phẩm", prefixIcon: Icon(Icons.assignment)),
+        Container(
+          margin: EdgeInsets.only(left: 1, top: 1, right: 1),
+          child: FormField<String>(
+            builder: (FormFieldState<String> state) {
+              return InputDecorator(
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(12, 10, 20, 20),
+                    errorStyle:
+                        TextStyle(color: Colors.redAccent, fontSize: 16.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0))),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<BankListDataModel>(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                      fontFamily: "verdana_regular",
+                    ),
+                    hint: Text(
+                      "Chọn vật phẩm",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontFamily: "verdana_regular",
+                      ),
+                    ),
+
+                    items: bankDataList
+                        .map<DropdownMenuItem<BankListDataModel>>(
+                            (BankListDataModel value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            new CircleAvatar(
+                              backgroundImage: new AssetImage(value.bank_logo),
+                            ),
+                            // Icon(valueItem.bank_logo),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text(
+                              value.bank_name,
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    isExpanded: true,
+                    isDense: true,
+                    onChanged: (BankListDataModel? newSelectedBank) {
+                      _onDropDownItemSelected(newSelectedBank!);
+                      changeProduct(_bankChoose);
+                      print("kkkkkkkkkk" + _bankChoose.bank_logo);
+                    },
+                    value: _bankChoose,
+                  ),
+                ),
+              );
+            },
+          ),
         ),
+
         TextField(
           // autocorrect: true,
           // autofocus: true,
@@ -75,11 +164,25 @@ class ProductUpdate extends StatelessWidget {
           enableSuggestions: true,
           textCapitalization: TextCapitalization.sentences,
           maxLines: null,
-          controller: _pricecontroller,
+          controller: _priceController,
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.send,
           decoration: const InputDecoration(
               labelText: "Giá tiền", prefixIcon: Icon(Icons.money)),
+        ),
+
+        TextField(
+          // autocorrect: true,
+          // autofocus: true,
+          enableSuggestions: true,
+          textCapitalization: TextCapitalization.sentences,
+          controller: _noteController,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.send,
+          maxLines: null,
+          // onSubmitted: (_) => _onSubmittedHandler(context),
+          decoration: InputDecoration(
+              labelText: "Ghi chú", prefixIcon: Icon(Icons.assignment)),
         ),
         Row(
           children: <Widget>[
@@ -118,9 +221,9 @@ class ProductUpdate extends StatelessWidget {
                               TextStyle(color: Colors.white, fontSize: 16)),
                       onChanged: (datevalue) {
                     date = '$datevalue';
-                    changeNm("${DateFormat('dd-MM-yyyy').format(
+                    changeDate("${DateFormat('dd-MM-yyyy').format(
                       DateTime.parse(
-                        date,
+                        date!,
                       ),
                     )}");
                     (context as Element).markNeedsBuild(); // setState

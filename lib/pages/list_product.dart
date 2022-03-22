@@ -21,114 +21,130 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   final ProductStore ProductsStore = ProductStore();
+  ValueNotifier<int> countCart= ValueNotifier(0);
+@override
+void dispose() {
+  print('dispose');
+  countCart.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+  print('initState');
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text(' Danh sách chi tiêu'),
-          leading: IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          ),
-          actions: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Badge(
-            position: BadgePosition.topEnd(top: 3, end: 3),
-            animationDuration: Duration(milliseconds: 300),
-            animationType: BadgeAnimationType.slide,
-            badgeColor: Colors.white,
-            toAnimate: true,
-            badgeContent: Text(
-              '0',
-              style: TextStyle(
-                  fontSize: 8,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold),
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.add_alert),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Không có thông báo nào!")));
-              },
-            ),
-          ),
-        ),
-      ]),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        onPressed: () =>
-            // _showAdd(context),
-            _onPressedHandler(context),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
-      body: SafeArea(
-        child: FutureBuilder(
-            future: ProductsStore.stream(),
-            builder: (context, AsyncSnapshot<Stream<List<Product>>> snapshot) {
-              Stream<List<Product>>? _stream = snapshot.data;
-              return StreamBuilder<List<Product>>(
-                stream: _stream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    List<Product>? _ProductsList = snapshot.data;
-                    if (_ProductsList?.length == 0) {
-                      TextTheme textTheme = Theme.of(context).textTheme;
-                      return Center(
-                        child: Text(
-                          "Chưa có //",
-                          style: textTheme.headline6,
+    return FutureBuilder(
+        future: ProductsStore.stream(),
+        builder: (context, AsyncSnapshot<Stream<List<Product>>> snapshot) {
+          Stream<List<Product>>? _stream = snapshot.data;
+          return StreamBuilder<List<Product>>(
+            stream: _stream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                List<Product>? _ProductsList = snapshot.data;
+                if(_ProductsList!.isNotEmpty){
+                  countCart.value = _ProductsList.length;
+                }
+                print('countCartcountCart ${countCart}');
+                if (_ProductsList.length == 0) {
+                  TextTheme textTheme = Theme.of(context).textTheme;
+                  return Center(
+                    child: Text(
+                      "Chưa có //",
+                      style: textTheme.headline6,
+                    ),
+                  );
+                } else {
+                  return Scaffold(
+                    appBar: AppBar(title: const Text(' Danh sách chi tiêu'),
+                        leading: IconButton(
+                          icon: Icon(
+                            Icons.menu,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {},
                         ),
-                      );
-                    } else {
-                      // setState(() {
-                      //   sl == _ProductsList?.length;
-                      // });
-                      return ListView.builder(
-                        itemCount: _ProductsList?.length,
+                        actions: <Widget>[
+                          Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: Badge(
+                                position: BadgePosition.topEnd(top: 3, end: 3),
+                                animationDuration: Duration(milliseconds: 300),
+                                animationType: BadgeAnimationType.slide,
+                                badgeColor: Colors.white,
+                                toAnimate: true,
+                                badgeContent: Text(
+                                  '${countCart.value}',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.shopping_cart),
+                                  iconSize: 35,
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                                        content: Text("Hiện tại đã mua  ${countCart.value} vật phẩm!")));
+                                  },
+                                ),
+                              )
+
+                          ),
+                        ]),
+                    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+                    floatingActionButton: FloatingActionButton(
+                      backgroundColor: Colors.green,
+                      onPressed: () =>
+                      // _showAdd(context),
+                      _onPressedHandler(context),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                    ),
+                    body: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 75),
+                        child:  ListView.builder(
+                        itemCount: _ProductsList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          // setState(() {
-                          //   sl +=sl;
-                          // });
                           return InkWell(
                               onLongPress: () {
-                                _onShowDetails(context, _ProductsList![index]);
+                                _onShowDetails(context, _ProductsList[index]);
                               },
                               onTap: () {
-                                ProductsStore.findAll();
-
-                                print(";;;;;;;;;;;;;;");
-                                _onLongPressHandler(
-                                    context, _ProductsList![index]);
+                                _onShowDetails(context, _ProductsList[index]);
+                                // _onLongPressHandler(
+                                //     context, _ProductsList[index]);
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20.0, vertical: 10),
                                 child:
-                                    ProductItem(product: _ProductsList![index]),
+                                ProductItem(product: _ProductsList[index]),
                               ));
                         },
-                      );
-                    }
-                  }
-                },
-              );
-            }
-            // },
-
-            ),
-      ),
+                      ),
+                      ),
+                    ),
+                  );
+                }
+              }
+            },
+          );
+        }
+      // },
     );
+
   }
 
   _onPressedHandler(BuildContext context) async {
@@ -191,7 +207,30 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           child: Text("Chi tiết chi tiêu",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20))),
-                      SizedBox(height: 20.0),
+                      // SizedBox(height: 20.0),
+                      const Center(
+                        child: Text('-----------------',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blueGrey)),
+                      ),
+                      Center(
+                        child: Container(
+                          //this container is for circular image
+                          height: 50,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                            ),
+                            image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: AssetImage(Products.logo)),
+                          ),
+                        ),
+                      ),
                       Detail_Profile(
                         lb: "Đồ mua",
                         txt: Products.name,
@@ -203,121 +242,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         size: 15,
                       ),
                       Detail_Profile(
+                        lb: "Ghi chú",
+                        txt: Products.note,
+                        size: 15,
+                      ),
+                      Detail_Profile(
                         lb: "Ngày mua",
                         txt: Products.date,
                         size: 15,
                       ),
                       SizedBox(height: 20.0),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            RaisedButton(
-                              color: Colors.red,
-                              textColor: Colors.white,
-                              child: Text('Xoá'),
-                              onPressed: () {
-                                Get.defaultDialog(
-                                    title: "Thông báo!",
-                                    // middleText: "Thông báo!",
-                                    backgroundColor: Colors.white,
-                                    titleStyle: TextStyle(color: Colors.red),
-                                    middleTextStyle:
-                                        TextStyle(color: Colors.white),
-                                    onCancel: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop('dialog');
-                                    },
-                                    onConfirm: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop('dialog');
-                                      ProductsStore.delete(Products);
-                                      FrappeAlert.errorAlert(
-                                        title: "Thông báo",
-                                        subtitle: 'Xóa thành công !',
-                                        context: context,
-                                      );
-                                      Navigator.pop(context);
-                                    },
-                                    textConfirm: "Ok",
-                                    textCancel: "Không",
-                                    cancelTextColor: Colors.black54,
-                                    confirmTextColor: Colors.red,
-                                    buttonColor: Colors.black12,
-                                    barrierDismissible: false,
-                                    radius: 50,
-                                    content: Column(
-                                      children: [
-                                        Container(
-                                            child: Text("Bạn có chắc chắn : ")),
-                                        Container(child: Text("muốn xóa ? ")),
-                                      ],
-                                    ));
-                                // ProductsStore.delete(Products);
-                                // Navigator.of(context, rootNavigator: true)
-                                //     .pop('dialog');
-                              },
-                            ),
-                            SizedBox(width: 20.0),
-                            RaisedButton(
-                              color: Colors.grey,
-                              child: Text('Hủy'),
-                              onPressed: () {
-                                FocusScope.of(context).requestFocus(
-                                  FocusNode(),
-                                ); // ẩn bàn phím
-                                Navigator.of(context, rootNavigator: true)
-                                    .pop('dialog');
-                              },
-                            ),
-                          ])
-                    ]),
-              ],
-            ),
-          ));
-        });
-  }
 
-  _onLongPressHandler(BuildContext context, Product product) async {
-    Product productEdit = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              // title: Text("Cập nhật"),
-              content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        height: 60,
-                        child: const Center(
-                          child: Text('Cập nhật chi tiêu',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            border:
-                                Border.all(width: 1.0, color: Colors.black12)),
-                      ),
-                      const Center(
-                        child: Text('-----------------',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blueGrey)),
-                      ),
-                      ProductUpdate(product: product),
                     ]),
               ],
             ),
           ));
         });
-    if (productEdit != null) {
-      print("upppp" + productEdit.name + productEdit.toString());
-      ProductsStore.update(productEdit);
-      // ProductsStore.delete(ProductsEdited);
-    }
   }
 }

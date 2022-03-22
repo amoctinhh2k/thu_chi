@@ -1,7 +1,9 @@
 import 'package:app_thuchi/controllers/product_store.dart';
 import 'package:app_thuchi/models/products.dart';
-import 'package:app_thuchi/widgets/ll.dart';
+import 'package:app_thuchi/widgets/product_update.dart';
+import 'package:app_thuchi/widgets/thuchi_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
@@ -14,14 +16,11 @@ class ProductItem extends StatefulWidget {
 }
 
 class _ProductItemState extends State<ProductItem> {
-  int sl = 1;
-  int tong=0;
-int price=0;
+  final ProductStore ProductsStore = ProductStore();
+
 
   @override
   Widget build(BuildContext context) {
-    tong=price;
-    price=int.parse(widget.product.price);
     return Card(
       color: Colors.grey[100],
       child: Padding(
@@ -45,12 +44,9 @@ int price=0;
                           ),
                           image: DecorationImage(
                               fit: BoxFit.fill,
-                              image: AssetImage("assets/lon.jpg")),
+                              image: AssetImage(widget.product.logo)),
                         ),
                       ),
-                      //     Image.asset(
-                      //   "assets/charity.png",
-                      // ),
                     ),
                     Expanded(
                       flex: 6,
@@ -72,15 +68,12 @@ int price=0;
                               ),
                             ),
                             Padding(
-                              // padding: const EdgeInsets.all(5),
                               padding: const EdgeInsets.fromLTRB(10, 3, 3, 10),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  // widget.product.price
-                                  "$tong"
+                                  widget.product.price
                                       + " đ",
-
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     fontSize: 14,
@@ -99,63 +92,73 @@ int price=0;
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: Theme
-                                .of(context)
-                                .accentColor),
+                           ),
                         child: Row(
                           children: [
                             Expanded(
                               flex: 3,
                               child: InkWell(
                                   onTap: () {
-                                  tong=tong-price;
-                                    sl = sl - 1;
-                                  },
+                                    _onTapEdit(context, widget.product);
+                                        },
                                   child: Icon(
-                                    Icons.remove,
-                                    color: Colors.white,
-                                    size: 16,
+                                    Icons.edit,
+                                    color: Colors.blue,
+                                    size: 20,
                                   )),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 3),
-                                padding:
-                                EdgeInsets.symmetric(
-                                    horizontal: 3, vertical: 2),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    color: Colors.white),
-                                child: Text(
-                                  "$sl",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 16),
-                                ),
-                              ),
                             ),
                             Expanded(
                               flex: 3,
                               child: InkWell(
                                   onTap: () {
-                                    setState(() {
-                                      tong=tong+price;
-                                      sl = sl + 1;
-                                    });
+                                    Get.defaultDialog(
+                                        title: "Thông báo!",
+                                        // middleText: "Thông báo!",
+                                        backgroundColor: Colors.white,
+                                        titleStyle: TextStyle(color: Colors.red),
+                                        middleTextStyle:
+                                        TextStyle(color: Colors.white),
+                                        onCancel: () {
+                                          Navigator.of(context, rootNavigator: true)
+                                              .pop('dialog');
+                                        },
+                                        onConfirm: () {
+                                          Navigator.of(context, rootNavigator: true)
+                                              .pop('dialog');
+                                          ProductsStore.delete(widget.product);
+                                          FrappeAlert.errorAlert(
+                                            title: "Thông báo",
+                                            subtitle: 'Xóa thành công !',
+                                            context: context,
+                                          );
+                                          // Navigator.pop(context);
+                                        },
+                                        textConfirm: "Ok",
+                                        textCancel: "Không",
+                                        cancelTextColor: Colors.black54,
+                                        confirmTextColor: Colors.red,
+                                        buttonColor: Colors.black12,
+                                        barrierDismissible: false,
+                                        radius: 50,
+                                        content: Column(
+                                          children: [
+                                            Container(
+                                                child: Text("Bạn có chắc chắn : ")),
+                                            Container(child: Text("muốn xóa ? ")),
+                                          ],
+                                        ));
                                   },
                                   child: Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 16,
+                                    Icons.delete,
+                                    color: Colors.redAccent,
+                                    size: 20,
                                   )),
                             ),
                           ],
                         ),
                       ),
-                      //       Image.asset(
-                      //   "assets/cash.png",
-                      // ),
                     ),
+
                   ]),
               Padding(
                   padding: const EdgeInsets.all(5),
@@ -170,5 +173,51 @@ int price=0;
             ],
           )),
     );
+  }
+
+
+
+  _onTapEdit(BuildContext context, Product product) async {
+    Product productEdit = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            // title: Text("Cập nhật"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            height: 60,
+                            child: const Center(
+                              child: Text('Cập nhật chi tiêu',
+                                  style: TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.bold)),
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                                border:
+                                Border.all(width: 1.0, color: Colors.black12)),
+                          ),
+                          const Center(
+                            child: Text('-----------------',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blueGrey)),
+                          ),
+                          ProductUpdate(product: product),
+                        ]),
+                  ],
+                ),
+              ));
+        });
+    if (productEdit != null) {
+      print("upppp" + productEdit.name + productEdit.toString());
+      ProductsStore.update(productEdit);
+      // ProductsStore.delete(ProductsEdited);
+    }
   }
 }

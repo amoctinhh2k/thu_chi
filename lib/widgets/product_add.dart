@@ -7,7 +7,27 @@ import 'package:intl/intl.dart';
 import 'item_profile.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'rounded_input_field.dart';
+import 'package:app_thuchi/models/products.dart';
 
+
+// class BankListDataModel extends Equatable {
+//   final String bank_name;
+//   final String bank_logo;
+//
+//   BankListDataModel(this.bank_name, this.bank_logo);
+//   @override
+//   List<Object> get props => [bank_name, bank_logo];
+// }
+
+
+
+// List<BankListDataModel> bankDataList = [
+//   BankListDataModel("Đồ ăn", "assets/an.jpg"),
+//   BankListDataModel("Mua heo", "assets/lon.jpg"),
+//   BankListDataModel("Mua xăng", "assets/xang.jpg"),
+//   BankListDataModel("Quần áo", "assets/ao.jpg"),
+//   BankListDataModel("Đồ uống", "assets/uong.jpg"),
+// ];
 class ProductAdd extends StatefulWidget {
   @override
   ProductAddState createState() {
@@ -16,35 +36,57 @@ class ProductAdd extends StatefulWidget {
 }
 
 class ProductAddState extends State<ProductAdd> {
-  // String dropdownValue = 'Nhân sự';
   String date = DateTime.now().toString();
-  late String _date;
-
-  final TextEditingController _namecontroller = TextEditingController();
+  late String _date,_name,_logo;
+  late BankListDataModel _bankChoose;
+  final TextEditingController _notecontroller = TextEditingController();
   final TextEditingController _pricecontroller = TextEditingController();
   bool _validate = false;
   bool _validate1 = false;
 
-  changeNm(String value) {
+
+
+  void initState() {
+    super.initState();
+    _bankChoose = bankDataList[0];
+  }
+
+  void _onDropDownItemSelected(BankListDataModel newSelectedBank) {
+    setState(() {
+      _bankChoose = newSelectedBank;
+    });
+  }
+
+
+  changeDate(String value) {
     _date = value;
     print("kkkk" + _date);
   }
 
+  changeProduct(BankListDataModel product){
+    _name = product.bank_name;
+    _logo = product.bank_logo;
+    print("logo");
+  }
+
+
   _onSubmittedHandler(BuildContext context) {
-    String name = _namecontroller.text.trim();
+    _name = _bankChoose.bank_name;
+    _logo = _bankChoose.bank_logo;
+    String note = _notecontroller.text.trim();
     String price = _pricecontroller.text.trim();
     _date = "${DateFormat('dd-MM-yyyy').format(
       DateTime.parse(
         date,
       ),
     )}";
-
-    if (name.length == 0 || price.length == 0) {
+    if (note.length == 0 || price.length == 0) {
       print("pppppppppp" + _date);
       Navigator.of(context).pop();
     } else {
+
       print("yyyyyyyy" + _date);
-      Product product = Product(name: name, price: price, date: _date);
+      Product product = Product(name: _name, price: price, date: _date,logo:_logo,note:note);
       FrappeAlert.successAlert(
         title: "Thông báo",
         subtitle: 'Thêm mới thành công !',
@@ -58,7 +100,89 @@ class ProductAddState extends State<ProductAdd> {
   Widget build(BuildContext context) {
     return ListBody(
       children: <Widget>[
-
+        Container(
+          margin: EdgeInsets.only(left: 1, top: 1, right: 1),
+          child: FormField<String>(
+            builder: (FormFieldState<String> state) {
+              return InputDecorator(
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(12, 10, 20, 20),
+                    errorStyle:
+                    TextStyle(color: Colors.redAccent, fontSize: 16.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0))),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<BankListDataModel>(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                      fontFamily: "verdana_regular",
+                    ),
+                    hint: Text(
+                      "Chọn vật phẩm",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontFamily: "verdana_regular",
+                      ),
+                    ),
+                    items: bankDataList
+                        .map<DropdownMenuItem<BankListDataModel>>(
+                            (BankListDataModel value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                new CircleAvatar(
+                                  backgroundImage:
+                                  new
+                                  AssetImage(value.bank_logo),
+                                  // AssetImage((value.bank_logo!=null)?"ppppppp":value.bank_logo),
+                                ),
+                                // Icon(valueItem.bank_logo),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Text(value.bank_name,style: TextStyle(color: Colors.black54),),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                    isExpanded: true,
+                    isDense: true,
+                    onChanged: (BankListDataModel ?newSelectedBank) {
+                      _onDropDownItemSelected(newSelectedBank!);
+                       changeProduct(_bankChoose);
+                       print("kkkkkkkkkk"+_bankChoose.bank_logo);
+                    },
+                    value: _bankChoose,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        // DownButton(),
+        TextField(
+          // enableSuggestions: true,
+          textCapitalization: TextCapitalization.sentences,
+          controller: _pricecontroller,
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.send,
+          maxLines: null,
+          // inputFormatters: <TextInputFormatter>[
+          //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+          // ],
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ],
+          decoration: InputDecoration(
+            labelText: "Giá tiền",
+            prefixIcon: Icon(Icons.monetization_on),
+            errorText: _validate1 ? 'Chưa nhập giá tiền !' : null,
+          ),
+        ),
         TextField(
           // autocorrect: true,
           // autofocus: true,
@@ -69,36 +193,14 @@ class ProductAddState extends State<ProductAdd> {
           cursorColor: Colors.white,
           maxLines: null,
           textCapitalization: TextCapitalization.sentences,
-          controller: _namecontroller,
+          controller: _notecontroller,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.send,
           // onSubmitted: (_) => _onSubmittedHandler(context),
           decoration: InputDecoration(
-            labelText: "Vật phẩm",
+            labelText: "Ghi chú",
             prefixIcon: Icon(Icons.assignment),
-            errorText: _validate ? 'Chưa nhập vật phẩm !' : null,
-          ),
-        ),
-
-        Flexible(
-          child: TextField(
-            // enableSuggestions: true,
-            textCapitalization: TextCapitalization.sentences,
-            controller: _pricecontroller,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.send,
-            maxLines: null,
-            // inputFormatters: <TextInputFormatter>[
-            //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-            // ],
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            decoration: InputDecoration(
-              labelText: "Giá tiền",
-              prefixIcon: Icon(Icons.monetization_on),
-              errorText: _validate1 ? 'Chưa nhập giá tiền !' : null,
-            ),
+            errorText: _validate ? 'Chưa nhập ghi chú !' : null,
           ),
         ),
         Row(children: <Widget>[
@@ -113,7 +215,8 @@ class ProductAddState extends State<ProductAdd> {
               style: TextStyle(fontSize: 16, color: Colors.black54)),
           Padding(
             padding: const EdgeInsets.all(1),
-            child: FlatButton(
+            child: TextButton(
+              style: TextButton.styleFrom(backgroundColor:Colors.black12,),
               child: Text(
                 "${DateFormat('dd-MM-yyyy').format(
                   DateTime.parse(
@@ -131,17 +234,19 @@ class ProductAddState extends State<ProductAdd> {
                     minTime: DateTime(2022, 1, 1),
                     maxTime: DateTime.now(),
                     theme: DatePickerTheme(
-                        headerColor: Colors.orange,
-                        backgroundColor: Colors.blue,
+                        // headerColor: Colors.orange,
+                        // backgroundColor: Colors.blue,
                         itemStyle: TextStyle(
-                            color: Colors.white,
+                            // color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 18),
                         doneStyle:
-                            TextStyle(color: Colors.white, fontSize: 16)),
+                            TextStyle(
+                                // color: Colors.white,
+                                fontSize: 16)),
                     onChanged: (datevalue) {
                   date = '$datevalue';
-                  changeNm("${DateFormat('dd-MM-yyyy').format(
+                  changeDate("${DateFormat('dd-MM-yyyy').format(
                     DateTime.parse(
                       date,
                     ),
@@ -151,9 +256,8 @@ class ProductAddState extends State<ProductAdd> {
                   date = '$datevalue';
                 }, currentTime: DateTime.now(), locale: LocaleType.vi);
               },
-              color: Colors.black12,
             ),
-          )
+          ),
         ]),
         RaisedButton(
           color: Colors.blue,
@@ -165,7 +269,7 @@ class ProductAddState extends State<ProductAdd> {
           ),
           onPressed: () {
             setState(() {
-              _namecontroller.text.isEmpty
+              _notecontroller.text.isEmpty
                   ? _validate = true
                   : _validate = false;
               _pricecontroller.text.isEmpty

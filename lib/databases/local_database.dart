@@ -10,7 +10,7 @@ import 'package:sembast/sembast_io.dart';
 export 'package:sembast/sembast.dart';
 
 class LocalDatabase1 {
-  static const String _DATABASE_NAME = "product.db";
+  static const String _DATABASE_NAME = "product1.db";
   static final LocalDatabase _singleton = LocalDatabase._();
 
   static LocalDatabase get instance => _singleton;

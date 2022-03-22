@@ -13,7 +13,7 @@ class FrappeAlert {
     String? subtitle,
     @required BuildContext? context,
     @required MaterialColor? color,
-    Duration aleartDuration = const Duration(seconds: 5),
+    Duration aleartDuration = const Duration(seconds: 1),
   }) {
     FToast fToast = FToast();
     fToast.init(context!);

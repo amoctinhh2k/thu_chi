@@ -9,7 +9,7 @@ import 'package:sembast/sembast.dart';
 import '../databases/local_database.dart';
 
 class ProductStore {
-  static const String _STORE_NAME = "product";
+  static const String _STORE_NAME = "product1";
 
   final _store = intMapStoreFactory.store(_STORE_NAME);
   Future<Database> get _db async => await LocalDatabase.instance.database;
