@@ -53,20 +53,40 @@ class _ProductItemState extends State<ProductItem> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  widget.product.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(10, 3, 3, 3),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      widget.product.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Text("*",style: TextStyle(color: Colors.grey),),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(3, 3, 3, 3),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      '( ${widget.product.note} )',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.deepOrangeAccent
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+
                             Padding(
                               padding: const EdgeInsets.fromLTRB(10, 3, 3, 10),
                               child: Align(
@@ -83,6 +103,7 @@ class _ProductItemState extends State<ProductItem> {
                                 ),
                               ),
                             ),
+
                           ]),
                     ),
                     Expanded(
@@ -104,7 +125,7 @@ class _ProductItemState extends State<ProductItem> {
                                   child: Icon(
                                     Icons.edit,
                                     color: Colors.blue,
-                                    size: 20,
+                                    size: 25,
                                   )),
                             ),
                             Expanded(
@@ -151,7 +172,7 @@ class _ProductItemState extends State<ProductItem> {
                                   child: Icon(
                                     Icons.delete,
                                     color: Colors.redAccent,
-                                    size: 20,
+                                    size: 25,
                                   )),
                             ),
                           ],

@@ -1,4 +1,5 @@
 import 'package:app_thuchi/pages/list_product.dart';
+import 'package:app_thuchi/pages/list_search_product.dart';
 import 'package:flutter/material.dart';
 import 'package:app_thuchi/pages/home.dart';
 import 'package:get/get.dart';
@@ -34,6 +35,10 @@ void main() {
         name: '/chitieu',
         page: () => ProductListScreen(),
       ),
+      // GetPage(
+      //   name: '/search',
+      //   page: () => ProductListSearch(),
+      // ),
     ],
   ));
 }

@@ -1,7 +1,7 @@
 import 'package:app_thuchi/controllers/product_store.dart';
 import 'package:app_thuchi/models/products.dart';
 import 'package:app_thuchi/pages/home.dart';
-// import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:app_thuchi/pages/list_search_product.dart';
 import 'package:app_thuchi/widgets/thuchi_alert.dart';
 import 'package:app_thuchi/widgets/product_add.dart';
 import 'package:app_thuchi/widgets/product_item.dart';
@@ -21,130 +21,228 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   final ProductStore ProductsStore = ProductStore();
-  ValueNotifier<int> countCart= ValueNotifier(0);
-@override
-void dispose() {
-  print('dispose');
-  countCart.dispose();
+  ValueNotifier<int> countCart = ValueNotifier(0);
+  String date = DateTime.now().toString();
+  late String _date, _name, _logo;
+  late BankListDataModel _bankChoose;
+
+  @override
+  void dispose() {
+    print('dispose');
+    countCart.dispose();
     super.dispose();
   }
 
-  @override
   void initState() {
-  print('initState');
-    // TODO: implement initState
     super.initState();
+    _bankChoose = bankDataList[0];
+    _name = _bankChoose.bank_name;
   }
+
+  void _onDropDownItemSelected(BankListDataModel newSelectedBank) {
+    setState(() {
+      _bankChoose = newSelectedBank;
+    });
+  }
+
+  changeItem(BankListDataModel product) {
+    _name = product.bank_name;
+    _logo = product.bank_logo;
+    print("logo");
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: ProductsStore.stream(),
-        builder: (context, AsyncSnapshot<Stream<List<Product>>> snapshot) {
-          Stream<List<Product>>? _stream = snapshot.data;
-          return StreamBuilder<List<Product>>(
-            stream: _stream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                List<Product>? _ProductsList = snapshot.data;
-                if(_ProductsList!.isNotEmpty){
-                  countCart.value = _ProductsList.length;
-                }
-                print('countCartcountCart ${countCart}');
-                if (_ProductsList.length == 0) {
-                  TextTheme textTheme = Theme.of(context).textTheme;
-                  return Center(
-                    child: Text(
-                      "Chưa có //",
-                      style: textTheme.headline6,
-                    ),
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
+        onPressed: () =>
+            // _showAdd(context),
+            _onPressedHandler(context),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+      body: FutureBuilder(
+          future: ProductsStore.stream(),
+          builder: (context, AsyncSnapshot<Stream<List<Product>>> snapshot) {
+            Stream<List<Product>>? _stream = snapshot.data;
+            return StreamBuilder<List<Product>>(
+              stream: _stream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
                 } else {
-                  return Scaffold(
-                    appBar: AppBar(title: const Text(' Danh sách chi tiêu'),
-                        leading: IconButton(
-                          icon: Icon(
-                            Icons.menu,
-                            color: Colors.white,
+                  List<Product>? _ProductsList = snapshot.data;
+                  if (_ProductsList!.isNotEmpty) {
+                    countCart.value = _ProductsList.length;
+                  }
+                  print('countCartcountCart ${countCart}');
+                  if (_ProductsList.length == 0) {
+                    TextTheme textTheme = Theme.of(context).textTheme;
+                    return Scaffold(
+                      appBar: AppBar(
+                          title: const Text(' Danh sách chi tiêu'),
+                          leading: IconButton(
+                            icon: Icon(
+                              Icons.menu,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {},
                           ),
-                          onPressed: () {},
+                          actions: <Widget>[
+                            // IconButton(
+                            //   icon: const Icon(Icons.search),
+                            //   iconSize: 35,
+                            //   onPressed: () {
+                            //     _showSearch(context);
+                            //   },
+                            // ),
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                                child: Badge(
+                                  position:
+                                      BadgePosition.topEnd(top: 3, end: 3),
+                                  animationDuration:
+                                      Duration(milliseconds: 300),
+                                  animationType: BadgeAnimationType.slide,
+                                  badgeColor: Colors.white,
+                                  toAnimate: true,
+                                  badgeContent: Text(
+                                    '${countCart.value}',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(Icons.shopping_cart),
+                                    iconSize: 35,
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "Hiện tại đã mua  ${countCart.value} vật phẩm!")));
+                                    },
+                                  ),
+                                )),
+                          ]),
+                      floatingActionButtonLocation:
+                          FloatingActionButtonLocation.centerFloat,
+                      floatingActionButton: FloatingActionButton(
+                        backgroundColor: Colors.green,
+                        onPressed: () =>
+                            // _showAdd(context),
+                            _onPressedHandler(context),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
                         ),
-                        actions: <Widget>[
-                          Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 5),
-                              child: Badge(
-                                position: BadgePosition.topEnd(top: 3, end: 3),
-                                animationDuration: Duration(milliseconds: 300),
-                                animationType: BadgeAnimationType.slide,
-                                badgeColor: Colors.white,
-                                toAnimate: true,
-                                badgeContent: Text(
-                                  '${countCart.value}',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.shopping_cart),
-                                  iconSize: 35,
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-                                        content: Text("Hiện tại đã mua  ${countCart.value} vật phẩm!")));
-                                  },
-                                ),
-                              )
-
+                      ),
+                      body: Center(
+                        child: Text(
+                          "Chưa có //",
+                          style: textTheme.headline6,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Scaffold(
+                      appBar: AppBar(
+                          title: const Text(' Danh sách chi tiêu'),
+                          leading: IconButton(
+                            icon: Icon(
+                              Icons.menu,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {},
                           ),
-                        ]),
-                    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-                    floatingActionButton: FloatingActionButton(
-                      backgroundColor: Colors.green,
-                      onPressed: () =>
-                      // _showAdd(context),
-                      _onPressedHandler(context),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-                    ),
-                    body: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 75),
-                        child:  ListView.builder(
-                        itemCount: _ProductsList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                              onLongPress: () {
-                                _onShowDetails(context, _ProductsList[index]);
+                          actions: <Widget>[
+                            IconButton(
+                              icon: const Icon(Icons.search),
+                              iconSize: 35,
+                              onPressed: () {
+                                _showSearch(context);
                               },
-                              onTap: () {
-                                _onShowDetails(context, _ProductsList[index]);
-                                // _onLongPressHandler(
-                                //     context, _ProductsList[index]);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0, vertical: 10),
-                                child:
-                                ProductItem(product: _ProductsList[index]),
-                              ));
-                        },
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                                child: Badge(
+                                  position:
+                                      BadgePosition.topEnd(top: 3, end: 3),
+                                  animationDuration:
+                                      Duration(milliseconds: 300),
+                                  animationType: BadgeAnimationType.slide,
+                                  badgeColor: Colors.white,
+                                  toAnimate: true,
+                                  badgeContent: Text(
+                                    '${countCart.value}',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(Icons.shopping_cart),
+                                    iconSize: 35,
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "Hiện tại đã mua  ${countCart.value} vật phẩm!")));
+                                    },
+                                  ),
+                                )),
+                          ]),
+                      floatingActionButtonLocation:
+                          FloatingActionButtonLocation.centerFloat,
+                      floatingActionButton: FloatingActionButton(
+                        backgroundColor: Colors.green,
+                        onPressed: () =>
+                            // _showAdd(context),
+                            _onPressedHandler(context),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
                       ),
+                      body: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 75),
+                          child: ListView.builder(
+                            itemCount: _ProductsList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return InkWell(
+                                  // onLongPress: () {
+                                  //   _onShowDetails(context, _ProductsList[index]);
+                                  // },
+                                  onTap: () {
+                                    _onShowDetails(
+                                        context, _ProductsList[index]);
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20.0, vertical: 10),
+                                    child: ProductItem(
+                                        product: _ProductsList[index]),
+                                  ));
+                            },
+                          ),
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
                 }
-              }
-            },
-          );
-        }
-      // },
+              },
+            );
+          }
+          // },
+          ),
     );
-
   }
 
   _onPressedHandler(BuildContext context) async {
@@ -252,11 +350,123 @@ void dispose() {
                         size: 15,
                       ),
                       SizedBox(height: 20.0),
-
                     ]),
               ],
             ),
           ));
         });
   }
+
+  _showSearch(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Tìm kiếm vật phẩm"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(left: 1, top: 1, right: 1),
+                          child: FormField<String>(
+                            builder: (FormFieldState<String> state) {
+                              return InputDecorator(
+                                decoration: InputDecoration(
+                                    contentPadding:
+                                    EdgeInsets.fromLTRB(12, 10, 20, 20),
+                                    errorStyle: TextStyle(
+                                        color: Colors.redAccent,
+                                        fontSize: 16.0),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(10.0))),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<BankListDataModel>(
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                      fontFamily: "verdana_regular",
+                                    ),
+                                    hint: Text(
+                                      "Chọn vật phẩm",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                        fontFamily: "verdana_regular",
+                                      ),
+                                    ),
+                                    items: bankDataList.map<
+                                        DropdownMenuItem<
+                                            BankListDataModel>>(
+                                            (BankListDataModel value) {
+                                          return DropdownMenuItem(
+                                            value: value,
+                                            child: Row(
+                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                new CircleAvatar(
+                                                  backgroundImage: new AssetImage(
+                                                      value.bank_logo),
+                                                ),
+                                                // Icon(valueItem.bank_logo),
+                                                SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Text(
+                                                  value.bank_name,
+                                                  style: TextStyle(
+                                                      color: Colors.black54),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }).toList(),
+                                    isExpanded: true,
+                                    isDense: true,
+                                    onChanged:
+                                        (BankListDataModel? newSelectedBank) {
+                                      _onDropDownItemSelected(newSelectedBank!);
+                                      changeItem(_bankChoose);
+                                      (context as Element).markNeedsBuild();
+                                      print(
+                                          "kkkkkkkkkk  -- " + _bankChoose.bank_logo);
+                                    },
+                                    value: _bankChoose,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ]),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () async {
+                        // Navigator.of(context, rootNavigator: true)
+                        //     .pop('dialog');
+                        print("kkkkkkkkk" + _name);
+                        String kk = 'Quần áo';
+                        Get.to(ProductListSearch(
+                          name: _name,
+                        ));
+                      },
+                      child: Text(
+                        'OK',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+
 }

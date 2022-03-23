@@ -11,4 +11,7 @@ class ProductController extends GetxController {
     name = _namecontroller.text.trim();
     tien = _tiencontroller.text.trim();
   }
+
+
+
 }

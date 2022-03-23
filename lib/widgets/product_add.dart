@@ -10,24 +10,6 @@ import 'rounded_input_field.dart';
 import 'package:app_thuchi/models/products.dart';
 
 
-// class BankListDataModel extends Equatable {
-//   final String bank_name;
-//   final String bank_logo;
-//
-//   BankListDataModel(this.bank_name, this.bank_logo);
-//   @override
-//   List<Object> get props => [bank_name, bank_logo];
-// }
-
-
-
-// List<BankListDataModel> bankDataList = [
-//   BankListDataModel("Đồ ăn", "assets/an.jpg"),
-//   BankListDataModel("Mua heo", "assets/lon.jpg"),
-//   BankListDataModel("Mua xăng", "assets/xang.jpg"),
-//   BankListDataModel("Quần áo", "assets/ao.jpg"),
-//   BankListDataModel("Đồ uống", "assets/uong.jpg"),
-// ];
 class ProductAdd extends StatefulWidget {
   @override
   ProductAddState createState() {
@@ -163,7 +145,7 @@ class ProductAddState extends State<ProductAdd> {
             },
           ),
         ),
-        // DownButton(),
+        // Down_Button(),
         TextField(
           // enableSuggestions: true,
           textCapitalization: TextCapitalization.sentences,

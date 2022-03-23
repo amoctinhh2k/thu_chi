@@ -13,12 +13,21 @@ class Product {
   Product(
       {this.key, required this.name, required this.price, required this.date,required  this.logo,required this.note,});
 
-  Product.fromJson(Map<String, dynamic> json, this.key)
-      : name = json['name'] as String,
-        price = json['price'] as String,
-        date = json['date'] as String,
-        logo = json['logo'] as String,
-        note = json['note'] as String;
+  // Product.fromJson(Map<String, dynamic> json, this.key)
+  //     : name = json['name'] as String,
+  //       price = json['price'] as String,
+  //       date = json['date'] as String,
+  //       logo = json['logo'] as String,
+  //       note = json['note'] as String;
+
+
+  factory Product.fromJson(Map<String, dynamic> json) => Product(
+         name : json['name'] as String,
+          price : json['price'] as String,
+          date : json['date'] as String,
+          logo : json['logo'] as String,
+          note : json['note'] as String,
+  );
 
   Map<String, dynamic> toJson() => {
     'name': name,

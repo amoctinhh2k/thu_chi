@@ -45,7 +45,7 @@ dependencies:
   google_fonts:
   carousel_slider: ^4.0.0
   equatable: ^2.0.3
-
+  side_navigation:
   flutter_datetime_picker:
     git:
       url: https://github.com/Realank/flutter_datetime_picker.git
@@ -83,10 +83,9 @@ flutter:
     - assets/
     - assets/images/
     - assets/design_course/
+    - assets/list_icon/
     - assets/fitness_app/
     - assets/icons/
-    - assets/hotel/
-    - assets/introduction_animation/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
