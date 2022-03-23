@@ -9,6 +9,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import 'app_home_screen.dart';
+
 
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
@@ -28,7 +30,8 @@ void main() {
     initialRoute: '/home',
     getPages: [
       GetPage(name: '/home', page: () =>
-          Home()
+          // Home()
+      AppHomeScreen(),
           // MyApp()
           ),
       GetPage(
@@ -49,7 +52,8 @@ class Home extends GetWidget {
     Widget open = SplashScreenView(
       navigateRoute:
       // HomeScreen(),
-      ProductListScreen(),
+      AppHomeScreen(),
+      // ProductListScreen(),
       duration: 5000,
       imageSize: 130,
       imageSrc: "assets/charity.png",

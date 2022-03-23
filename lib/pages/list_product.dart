@@ -87,13 +87,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     return Scaffold(
                       appBar: AppBar(
                           title: const Text(' Danh sách chi tiêu'),
-                          leading: IconButton(
-                            icon: Icon(
-                              Icons.menu,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {},
-                          ),
                           actions: <Widget>[
                             // IconButton(
                             //   icon: const Icon(Icons.search),
@@ -154,13 +147,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     return Scaffold(
                       appBar: AppBar(
                           title: const Text(' Danh sách chi tiêu'),
-                          leading: IconButton(
-                            icon: Icon(
-                              Icons.menu,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {},
-                          ),
+                          // leading: IconButton(
+                          //   icon: Icon(
+                          //     Icons.menu,
+                          //     color: Colors.white,
+                          //   ),
+                          //   onPressed: () {},
+                          // ),
                           actions: <Widget>[
                             IconButton(
                               icon: const Icon(Icons.search),

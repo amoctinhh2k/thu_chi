@@ -68,4 +68,12 @@ List<BankListDataModel> bankDataList = [
   BankListDataModel("Mua xăng", "assets/xang.jpg"),
   BankListDataModel("Quần áo", "assets/ao.jpg"),
   BankListDataModel("Đồ uống", "assets/uong.jpg"),
+
+  BankListDataModel("Game", "assets/list_icon/game.png"),
+  BankListDataModel("Du lịch", "assets/list_icon/dulich.jpg"),
+  BankListDataModel("Điện nước", "assets/list_icon/diennuoc.png"),
+  BankListDataModel("Điện thoại", "assets/list_icon/dienthoai.png"),
+
+
+
 ];

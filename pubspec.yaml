@@ -43,6 +43,7 @@ dependencies:
   path:
   google_nav_bar:
   google_fonts:
+  syncfusion_flutter_charts:
   carousel_slider: ^4.0.0
   equatable: ^2.0.3
   side_navigation:
