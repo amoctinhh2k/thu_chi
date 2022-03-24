@@ -62,6 +62,7 @@ class ProductStore {
       final products = Product.fromJson(snapshot.value);
       return products;
     }).toList();
+
   }
 
   Future<List<Product>> searchProducts(String name) async {

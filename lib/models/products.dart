@@ -47,7 +47,7 @@ class Product {
 
   @override
   String toString() {
-    return "Product { id: $key, Vật phẩm: $name, giá tiền: $price, Ngày mua: $date }";
+    return "{name: $name, price: $price, date: $date, note: $note }";
   }
 }
 

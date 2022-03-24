@@ -36,6 +36,12 @@ dependencies:
   fluttertoast:
   intl: ^0.17.0
   animations: ^2.0.0
+
+  animated_background:
+  flutter_speed_dial:
+  pie_chart:
+  grouped_list:
+
   splash_screen_view:
   badges:
   sembast: ^3.2.0

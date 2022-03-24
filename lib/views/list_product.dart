@@ -1,7 +1,6 @@
 import 'package:app_thuchi/controllers/product_store.dart';
 import 'package:app_thuchi/models/products.dart';
-import 'package:app_thuchi/pages/home.dart';
-import 'package:app_thuchi/pages/list_search_product.dart';
+
 import 'package:app_thuchi/widgets/thuchi_alert.dart';
 import 'package:app_thuchi/widgets/product_add.dart';
 import 'package:app_thuchi/widgets/product_item.dart';
@@ -11,6 +10,8 @@ import 'package:get/get.dart';
 import '../models/products.dart';
 import '../widgets/item_profile.dart';
 import 'package:badges/badges.dart';
+
+import 'list_search_product.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({Key? key}) : super(key: key);
@@ -145,15 +146,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     );
                   } else {
                     return Scaffold(
-                      appBar: AppBar(
-                          title: const Text(' Danh sách chi tiêu'),
-                          // leading: IconButton(
-                          //   icon: Icon(
-                          //     Icons.menu,
-                          //     color: Colors.white,
-                          //   ),
-                          //   onPressed: () {},
-                          // ),
+                      appBar: AppBar(title: const Text(' Danh sách chi tiêu'),
                           actions: <Widget>[
                             IconButton(
                               icon: const Icon(Icons.search),
@@ -369,13 +362,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
                               return InputDecorator(
                                 decoration: InputDecoration(
                                     contentPadding:
-                                    EdgeInsets.fromLTRB(12, 10, 20, 20),
+                                        EdgeInsets.fromLTRB(12, 10, 20, 20),
                                     errorStyle: TextStyle(
                                         color: Colors.redAccent,
                                         fontSize: 16.0),
                                     border: OutlineInputBorder(
                                         borderRadius:
-                                        BorderRadius.circular(10.0))),
+                                            BorderRadius.circular(10.0))),
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<BankListDataModel>(
                                     style: TextStyle(
@@ -392,31 +385,31 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                       ),
                                     ),
                                     items: bankDataList.map<
-                                        DropdownMenuItem<
-                                            BankListDataModel>>(
-                                            (BankListDataModel value) {
-                                          return DropdownMenuItem(
-                                            value: value,
-                                            child: Row(
-                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                new CircleAvatar(
-                                                  backgroundImage: new AssetImage(
-                                                      value.bank_logo),
-                                                ),
-                                                // Icon(valueItem.bank_logo),
-                                                SizedBox(
-                                                  width: 15,
-                                                ),
-                                                Text(
-                                                  value.bank_name,
-                                                  style: TextStyle(
-                                                      color: Colors.black54),
-                                                ),
-                                              ],
+                                            DropdownMenuItem<
+                                                BankListDataModel>>(
+                                        (BankListDataModel value) {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Row(
+                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            new CircleAvatar(
+                                              backgroundImage: new AssetImage(
+                                                  value.bank_logo),
                                             ),
-                                          );
-                                        }).toList(),
+                                            // Icon(valueItem.bank_logo),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            Text(
+                                              value.bank_name,
+                                              style: TextStyle(
+                                                  color: Colors.black54),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
                                     isExpanded: true,
                                     isDense: true,
                                     onChanged:
@@ -424,8 +417,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                       _onDropDownItemSelected(newSelectedBank!);
                                       changeItem(_bankChoose);
                                       (context as Element).markNeedsBuild();
-                                      print(
-                                          "kkkkkkkkkk  -- " + _bankChoose.bank_logo);
+                                      print("kkkkkkkkkk  -- " +
+                                          _bankChoose.bank_logo);
                                     },
                                     value: _bankChoose,
                                   ),
@@ -434,25 +427,42 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             },
                           ),
                         ),
+                        SizedBox(
+                          height: 15,
+                        )
                       ]),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () async {
-                        // Navigator.of(context, rootNavigator: true)
-                        //     .pop('dialog');
-                        print("kkkkkkkkk" + _name);
-                        String kk = 'Quần áo';
-                        Get.to(ProductListSearch(
-                          name: _name,
-                        ));
-                      },
-                      child: Text(
-                        'OK',
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RaisedButton(
+                          color: Colors.grey,
+                          child: Text('Hủy'),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .pop('dialog');
+                          },
+                        ),
                       ),
-                    ),
+                      SizedBox(width: 40,),
+                      Expanded(
+                        child: RaisedButton(
+                          color: Colors.green,
+                          child: Text(
+                            'Lọc',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {
+                            // Navigator.of(context, rootNavigator: true)
+                            //     .pop('dialog');
+                            print("kkkkkkkkk" + _name);
+                            String kk = 'Quần áo';
+                            Get.to(ProductListSearch(
+                              name: _name,
+                            ));
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -460,6 +470,4 @@ class _ProductListScreenState extends State<ProductListScreen> {
           );
         });
   }
-
-
 }

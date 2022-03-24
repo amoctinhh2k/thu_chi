@@ -1,7 +1,7 @@
-import 'package:app_thuchi/pages/list_product.dart';
-import 'package:app_thuchi/pages/list_search_product.dart';
+
+
 import 'package:flutter/material.dart';
-import 'package:app_thuchi/pages/home.dart';
+
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'app_home_screen.dart';
+import 'views/list_product.dart';
 
 
 class HexColor extends Color {
@@ -31,7 +32,8 @@ void main() {
     getPages: [
       GetPage(name: '/home', page: () =>
           // Home()
-      AppHomeScreen(),
+      // AppHomeScreen(),
+        AppSet(),
           // MyApp()
           ),
       GetPage(

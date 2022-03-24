@@ -1,6 +1,6 @@
 import 'package:app_thuchi/controllers/product_store.dart';
 import 'package:app_thuchi/models/products.dart';
-import 'package:app_thuchi/pages/home.dart';
+
 import 'package:app_thuchi/widgets/rounded_input_field.dart';
 // import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:app_thuchi/widgets/thuchi_alert.dart';
@@ -57,6 +57,7 @@ void dispose() {
                   } else {
                     List<Product>? _ProductsList = snapshot.data as List<Product>?;
                     if (_ProductsList!.isNotEmpty) {
+                      print(""+_ProductsList.toString());
                       countCart.value = _ProductsList.length;
                     }
                     print('countCartcountCart ${countCart}');
@@ -118,16 +119,17 @@ void dispose() {
                             ]),
                         floatingActionButtonLocation: FloatingActionButtonLocation
                             .centerFloat,
-                        floatingActionButton: FloatingActionButton(
-                          backgroundColor: Colors.green,
-                          onPressed: () =>
-                          // _showAdd(context),
-                          _onPressedHandler(context),
-                          child: const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                        ),
+                        // floatingActionButton:
+                        // FloatingActionButton(
+                        //   backgroundColor: Colors.green,
+                        //   onPressed: () =>
+                        //   // _showAdd(context),
+                        //   // _onPressedHandler(context),
+                        //   child: const Icon(
+                        //     Icons.add,
+                        //     color: Colors.white,
+                        //   ),
+                        // ),
                         body: SafeArea(
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 75),
@@ -162,49 +164,6 @@ void dispose() {
         );
       }
     );
-  }
-  _onPressedHandler(BuildContext context) async {
-    Product productAdd = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              // title: Text("Thêm mới"),
-              content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        height: 60,
-                        child: const Center(
-                          child: Text('Thêm mới chi tiêu',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            border:
-                                Border.all(width: 1.0, color: Colors.black12)),
-                      ),
-                      const Center(
-                        child: Text('-----------------',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blueGrey)),
-                      ),
-                      const SizedBox(height: 10.0),
-                      ProductAdd(),
-                    ]),
-              ],
-            ),
-          ));
-        });
-    if (productAdd != null) {
-      print("kkkkk" + productAdd.name + productAdd.toString());
-      ProductsStore.save(productAdd);
-    }
   }
 
   _onShowDetails(BuildContext context, Product Products) async {
@@ -276,60 +235,5 @@ void dispose() {
         });
   }
 
-
-  Future<void> _showSearch(
-      BuildContext context,
-      ) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Tìm kiếm vật phẩm"),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        RoundedInputField(
-                          controller: TextEditingController()..text = "kk",
-                          hintText: "vật phẩm",
-                          onChanged: (value) {
-                            // name = value;
-                            // userProvider.changeUser(value);
-                          },
-                        ),
-                      ]),
-
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: RaisedButton(
-                      onPressed: () async {
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) => KetnoiCheckin(users, name)
-                        //   // MyAppHome(users)
-                        // ));
-                        // Navigator.of(context, rootNavigator: true)
-                        //     .pop('dialog');
-                        // model.getDataSearch(meta.docs[0], context);
-                      },
-                      child: Text(
-                        'OK',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      color: Colors.blue,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-
   }
 
-
-
-
-}
