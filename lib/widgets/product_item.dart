@@ -70,16 +70,18 @@ class _ProductItemState extends State<ProductItem> {
                                   ),
                                 ),
                                 Text("*",style: TextStyle(color: Colors.grey),),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(3, 3, 3, 3),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '( ${widget.product.note} )',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.deepOrangeAccent
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(3, 3, 3, 3),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        '( ${widget.product.note} )',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.deepOrangeAccent
+                                        ),
                                       ),
                                     ),
                                   ),

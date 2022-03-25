@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'home.dart';
 
+import 'views/classify_list.dart';
 import 'views/group_list_date.dart';
 import 'widgets/bieudo_pie_chart.dart';
 import 'widgets/home/bottom_bar_view.dart';
@@ -69,6 +70,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   var speedDialDirection = SpeedDialDirection.down; // up, down
   var selectedfABLocation = FloatingActionButtonLocation.endDocked;
 
+
   @override
   void initState() {
     tabIconsList.forEach((TabIconData tab) {
@@ -114,60 +116,41 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             //           fit: BoxFit.fill)),
             // ),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.nightlight_round),
-                tooltip: "Đổi nền",
-                onPressed: () => {
-                  widget.theme?.value = widget.theme?.value.index == 2
-                      ? ThemeMode.light
-                      : ThemeMode.dark
-                },
-              ),
-              Column(
-                children: [
-                  Expanded(
-                    child: SpeedDial(
-                      icon: Icons.pageview,
-                      activeIcon: Icons.close,
-                      openCloseDial: isDialOpen,
-                      childPadding: const EdgeInsets.all(5),
-                      visible: visible,
-                      direction: speedDialDirection,// view up , down
-                      tooltip: 'Mở menu ',
-                      elevation: 8.0,
-                      children: [
-                        SpeedDialChild(
-                          child: !rmicons ? const Icon(Icons.search_off) : null,
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          label: '',
-                          onTap: () => setState(() =>
-                              // rmicons = rmicons),
-                              rmicons = !rmicons),
-                          onLongPress: () => debugPrint(' CHILD LONG PRESS'),
-                        ),
-                        SpeedDialChild(
-                          child: !rmicons ? const Icon(Icons.date_range_outlined) : null,
-                          backgroundColor: Colors.deepOrange,
-                          foregroundColor: Colors.white,
-                          label: '',
-                          onTap: () => debugPrint('SECOND CHILD'),
-                        ),
-                        SpeedDialChild(
-                          child: !rmicons ? const Icon(Icons.pageview) : null,
-                          backgroundColor: Colors.indigo,
-                          foregroundColor: Colors.white,
-                          label: '',
-                          visible: true,
-                          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text((" Child Pressed")))),
-                          onLongPress: () => debugPrint(' LONG PRESS'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SpeedDial(
+            icon: Icons.wb_sunny,
+
+            activeIcon: Icons.nightlight_round,
+            openCloseDial: isDialOpen,
+            childPadding: const EdgeInsets.all(5),
+            visible: visible,
+            direction: speedDialDirection,// view up , down
+            elevation: 8.0,
+            // onPress: () => {
+            //   widget.theme?.value = widget.theme?.value.index == 2
+            //       ? ThemeMode.light
+            //       : ThemeMode.dark
+            // },
+              children: [
+          SpeedDialChild(
+          child:
+              Text("OK"),
+          // !rmicons
+          // ? const Icon(Icons.search_off)
+          //     : null,
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+          label: (widget.theme?.value.index == 1)?'Chuyển qua chế độ ban đêm ? ':'Chuyển qua chế độ ban ngày !',
+          onTap: () {
+              widget.theme?.value = widget.theme?.value.index == 2
+                  ? ThemeMode.light
+                  : ThemeMode.dark;
+          },
+      ),
+              ]
+          ),
+        ),
             ],
           ),
           bottomNavigationBar: BottomAppBar(
@@ -183,28 +166,70 @@ class _AppHomeScreenState extends State<AppHomeScreen>
                       : MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.nightlight_round),
-                  tooltip: "Đổi nền",
-                  onPressed: () => {
-                    widget.theme?.value = widget.theme?.value.index == 2
-                        ? ThemeMode.light
-                        : ThemeMode.dark
+                InkWell(
+                    onTap: () {
+                      Get.to(ProductListScreen());
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10),
+                      child: Row(children: <Widget>[
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(3, 10, 13, 10),
+                          child: Icon(Icons.search, color: Colors.green),
+                        ),
+                      ]),
+                    )),
+                InkWell(
+                    onTap: () {
+                      Get.to(MyGridList());
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10),
+                      child: Row(children: <Widget>[
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(3, 10, 13, 10),
+                          child: Icon(Icons.account_tree_rounded,
+                              color: Colors.orange),
+                        ),
+                      ]),
+                    )),
+                InkWell(
+                  onTap: () {
+                    // Get.to(ChartBieuDo());
+                    Get.to(PieChartPage());
                   },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(3, 10, 13, 10),
+                          child: Icon(
+                            Icons.pie_chart,
+                            color: Colors.amber,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                // ValueListenableBuilder<bool>(
-                //     valueListenable: isDialOpen,
-                //     builder: (ctx, value, _) => IconButton(
-                //           icon: const Icon(Icons.open_in_browser),
-                //           tooltip: (!value ? "Mở" : "Đóng") + " Speed Dial",
-                //           onPressed: () =>
-                //               {isDialOpen.value = !isDialOpen.value},
-                //         ))
               ],
             ),
           ),
           floatingActionButton: SpeedDial(
-            icon: Icons.add,
+            icon: Icons.list,
             activeIcon: Icons.close,
             openCloseDial: isDialOpen,
             childPadding: const EdgeInsets.all(5),
@@ -231,7 +256,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
                   child: Column(
                     children: [
                       Expanded(
-                        flex:4,
+                        flex:3,
                         child: Align(
                           alignment: Alignment.topRight,
                           child: IconButton(
@@ -303,6 +328,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
                     onTap: () {
                       // _onLongPressHandler(
                       //     context, _ProductsList[index]);
+                      Get.to(MyGridList());
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -391,6 +417,20 @@ class _AppHomeScreenState extends State<AppHomeScreen>
                         // ),
                         // Expanded(flex: 3, child: tabBody),
                         // Expanded(flex: 2, child: bottomBar()),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Icon(Icons.notes_outlined),
+                                SizedBox(
+                                  width: 3,
+                                ),
+                                Text(" Lượt chi tiêu gần đây!",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold),),
+                              ],
+                            )),
                         Expanded(
                             flex: 5,
                             child: MyList()),

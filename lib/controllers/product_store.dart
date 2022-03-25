@@ -65,11 +65,25 @@ class ProductStore {
 
   }
 
-  Future<List<Product>> searchProducts(String name) async {
+  Future<List<Product>> searchNameProducts(String name) async {
     print("kkuuuuuuuuuuuuuu"+name);
     var finder = Finder(
       filter:
       Filter.matches('name', '^$name'),
+      // sortOrders: [SortOrder('name')]
+    );
+    final recordSnapshot = await _store.find(await _db,finder: finder);
+    return recordSnapshot.map((snapshot) {
+      final products = Product.fromJson(snapshot.value);
+      return products;
+    }).toList();
+  }
+
+  Future<List<Product>> searchDateProducts(String date) async {
+    print("kkuuuuuuuuuuuuuu"+date);
+    var finder = Finder(
+      filter:
+      Filter.matches('date', '^$date'),
       // sortOrders: [SortOrder('name')]
     );
     final recordSnapshot = await _store.find(await _db,finder: finder);

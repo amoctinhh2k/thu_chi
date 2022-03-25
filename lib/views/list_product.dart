@@ -1,16 +1,17 @@
 import 'package:app_thuchi/controllers/product_store.dart';
 import 'package:app_thuchi/models/products.dart';
-
-import 'package:app_thuchi/widgets/thuchi_alert.dart';
 import 'package:app_thuchi/widgets/product_add.dart';
 import 'package:app_thuchi/widgets/product_item.dart';
-import 'package:app_thuchi/widgets/product_update.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../models/products.dart';
 import '../widgets/item_profile.dart';
 import 'package:badges/badges.dart';
 
+import 'list_search_date.dart';
 import 'list_search_product.dart';
 
 class ProductListScreen extends StatefulWidget {
@@ -33,11 +34,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
     countCart.dispose();
     super.dispose();
   }
-
   void initState() {
     super.initState();
     _bankChoose = bankDataList[0];
     _name = _bankChoose.bank_name;
+    _date = "${DateFormat('dd-MM-yyyy').format(
+      DateTime.parse(
+        date,
+      ),
+    )}";
   }
 
   void _onDropDownItemSelected(BankListDataModel newSelectedBank) {
@@ -45,7 +50,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
       _bankChoose = newSelectedBank;
     });
   }
-
+  changeDate(String value) {
+    _date = value;
+    print("kkkk" + _date);
+  }
   changeItem(BankListDataModel product) {
     _name = product.bank_name;
     _logo = product.bank_logo;
@@ -54,12 +62,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var visible = true;
+    var rmicons = false;
+    var isDialOpen = ValueNotifier<bool>(false);
+    var speedDialDirection = SpeedDialDirection.down; // up, down
+
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         onPressed: () =>
-            // _showAdd(context),
             _onPressedHandler(context),
         child: const Icon(
           Icons.add,
@@ -113,7 +125,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                         color: Theme.of(context).primaryColor,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  child: IconButton(
+                                  child:
+                                  IconButton(
                                     icon: const Icon(Icons.shopping_cart),
                                     iconSize: 35,
                                     onPressed: () {
@@ -146,17 +159,55 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     );
                   } else {
                     return Scaffold(
-                      appBar: AppBar(title: const Text(' Danh sách chi tiêu'),
+                      appBar: AppBar(
+                          title: const Text(' Danh sách chi tiêu'),
                           actions: <Widget>[
-                            IconButton(
-                              icon: const Icon(Icons.search),
-                              iconSize: 35,
-                              onPressed: () {
-                                _showSearch(context);
-                              },
-                            ),
+
                             Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                              child: Expanded(
+                                child: SpeedDial(
+                                  icon: Icons.search,
+                                  activeIcon: Icons.close,
+                                  openCloseDial: isDialOpen,
+                                  childPadding: const EdgeInsets.all(5),
+                                  // visible: visible,
+                                  direction: speedDialDirection,
+                                  // view up , down
+                                  tooltip: 'Mở menu ',
+                                  // elevation: 8.0,
+                                  children: [
+                                    SpeedDialChild(
+                                      child: !rmicons
+                                          ? const Icon(Icons.search_off)
+                                          : null,
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      label: 'Lọc theo vật phẩm',
+                                      onTap: () {
+                                        _showSearch(context);
+                                      },
+                                    ),
+                                    SpeedDialChild(
+                                      child: !rmicons
+                                          ? const Icon(
+                                              Icons.date_range_outlined)
+                                          : null,
+                                      backgroundColor: Colors.deepOrange,
+                                      foregroundColor: Colors.white,
+                                      label: 'Lọc theo thời gian',
+                                      onTap: () {
+                                        _showSearchDate(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
                                 child: Badge(
                                   position:
                                       BadgePosition.topEnd(top: 3, end: 3),
@@ -172,16 +223,32 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                         color: Theme.of(context).primaryColor,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  child: IconButton(
-                                    icon: const Icon(Icons.shopping_cart),
-                                    iconSize: 35,
-                                    onPressed: () {
+                                  child:
+                                  SpeedDial(
+                                    icon: Icons.shopping_cart,
+                                    // activeIcon: Icons.close,
+                                    openCloseDial: isDialOpen,
+                                    childPadding: const EdgeInsets.all(8),
+                                    visible: visible,
+                                    direction: speedDialDirection,
+                                    // view up , down
+                                    onPress: () {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  "Hiện tại đã mua  ${countCart.value} vật phẩm!")));
+                                          content: Text(
+                                              "Hiện tại đã muaqqqqqq  ${countCart.value} vật phẩm!")));
                                     },
                                   ),
+                                  // IconButton(
+                                  //   icon: const Icon(Icons.shopping_cart),
+                                  //   iconSize: 35,
+                                  //   onPressed: () {
+                                  //     ScaffoldMessenger.of(context)
+                                  //         .showSnackBar(SnackBar(
+                                  //             content: Text(
+                                  //                 "Hiện tại đã mua  ${countCart.value} vật phẩm!")));
+                                  //   },
+                                  // ),
                                 )),
                           ]),
                       floatingActionButtonLocation:
@@ -443,7 +510,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           },
                         ),
                       ),
-                      SizedBox(width: 40,),
+                      SizedBox(
+                        width: 40,
+                      ),
                       Expanded(
                         child: RaisedButton(
                           color: Colors.green,
@@ -458,6 +527,113 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             String kk = 'Quần áo';
                             Get.to(ProductListSearch(
                               name: _name,
+                            ));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  _showSearchDate(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Tìm kiếm vật phẩm"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Row(children: <Widget>[
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(3, 10, 13, 10),
+                      child: Icon(Icons.date_range, color: Colors.black54),
+                    ),
+                    Text("Ngày mua : ",
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
+                    Padding(
+                      padding: const EdgeInsets.all(1),
+                      child: TextButton(
+                        style: TextButton.styleFrom(backgroundColor:Colors.black12,),
+                        child: Text(
+                          "${DateFormat('dd-MM-yyyy').format(
+                            DateTime.parse(
+                              date,
+                            ),
+                          )}",
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13),
+                        ),
+                        onPressed: () {
+                          DatePicker.showDatePicker(context,
+                              showTitleActions: true,
+                              minTime: DateTime(2022, 1, 1),
+                              maxTime: DateTime.now(),
+                              theme: DatePickerTheme(
+                                // headerColor: Colors.orange,
+                                // backgroundColor: Colors.blue,
+                                  itemStyle: TextStyle(
+                                    // color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                  doneStyle:
+                                  TextStyle(
+                                    // color: Colors.white,
+                                      fontSize: 16)),
+                              onChanged: (datevalue) {
+                                date = '$datevalue';
+                                changeDate("${DateFormat('dd-MM-yyyy').format(
+                                  DateTime.parse(
+                                    date,
+                                  ),
+                                )}");
+                                (context as Element).markNeedsBuild(); // setState
+                              }, onConfirm: (datevalue) {
+                                date = '$datevalue';
+                              }, currentTime: DateTime.now(), locale: LocaleType.vi);
+                        },
+                      ),
+                    ),
+                  ]),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RaisedButton(
+                          color: Colors.grey,
+                          child: Text('Hủy'),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .pop('dialog');
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 40,
+                      ),
+                      Expanded(
+                        child: RaisedButton(
+                          color: Colors.green,
+                          child: Text(
+                            'Lọc',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {
+                            // Navigator.of(context, rootNavigator: true)
+                            //     .pop('dialog');
+                            print("kkkkkkkkk" + _date);
+                            String kk = 'Quần áo';
+                            Get.to(ListSearchDate(
+                              date: _date,
                             ));
                           },
                         ),

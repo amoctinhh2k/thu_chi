@@ -13,16 +13,16 @@ import '../models/products.dart';
 import '../widgets/item_profile.dart';
 import 'package:badges/badges.dart';
 
-class ProductListSearch extends StatefulWidget {
-  const ProductListSearch({Key? key, required this.name}) : super(key: key);
+class ListSearchDate extends StatefulWidget {
+  const ListSearchDate({Key? key, required this.date}) : super(key: key);
 
-  final String name;
+  final String date;
 
   @override
-  _ProductListSearchState createState() => _ProductListSearchState();
+  _ListSearchDateState createState() => _ListSearchDateState();
 }
 
-class _ProductListSearchState extends State<ProductListSearch> {
+class _ListSearchDateState extends State<ListSearchDate> {
   final ProductStore ProductsStore = ProductStore();
   ValueNotifier<int> countCart= ValueNotifier(0);
 @override
@@ -48,7 +48,7 @@ void dispose() {
         return StreamBuilder(
             builder: (context, snapshot) {
             return  FutureBuilder(
-                future: ProductsStore.searchNameProducts(widget.name),
+                future: ProductsStore.searchDateProducts(widget.date),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(
@@ -66,13 +66,13 @@ void dispose() {
                           .of(context)
                           .textTheme;
                       return Scaffold(
-                          appBar: AppBar(title: Text('Danh sách ${widget.name} ',
+                          appBar: AppBar(title: Text('Danh sách ${widget.date} ',
                           style: TextStyle(fontSize: 20),),),
                         body: Container(
                           color: Colors.white,
                           child: Center(
                             child: Text(
-                              "Chưa mua ${widget.name} !//",
+                              "Chưa mua ${widget.date} !//",
                               style: textTheme.headline6,
                             ),
                           ),
@@ -80,7 +80,7 @@ void dispose() {
                       );
                     } else {
                       return Scaffold(
-                        appBar: AppBar(title: Text('Danh sách ${widget.name} ',
+                        appBar: AppBar(title: Text('Danh sách ${widget.date} ',
                           style: TextStyle(fontSize: 20),
                         ),
                             actions: <Widget>[
@@ -110,7 +110,7 @@ void dispose() {
                                             SnackBar(
                                                 content: Text(
                                                     "Hiện tại tìm được  ${countCart
-                                                        .value} vật phẩm ${widget.name}!")));
+                                                        .value} vật phẩm trong ngày ${widget.date}!")));
                                       },
                                     ),
                                   )

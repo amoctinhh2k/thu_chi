@@ -43,6 +43,7 @@ dependencies:
   grouped_list:
 
   splash_screen_view:
+  responsive_grid_list:
   badges:
   sembast: ^3.2.0
   get:
