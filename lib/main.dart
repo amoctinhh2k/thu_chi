@@ -31,9 +31,9 @@ void main() {
     initialRoute: '/home',
     getPages: [
       GetPage(name: '/home', page: () =>
-          // Home()
+          Home()
       // AppHomeScreen(),
-        AppSet(),
+      //   AppSet(),
           // MyApp()
           ),
       GetPage(
@@ -54,8 +54,9 @@ class Home extends GetWidget {
   Widget build(BuildContext context) {
     Widget open = SplashScreenView(
       navigateRoute:
+      AppSet(),
       // HomeScreen(),
-      AppHomeScreen(),
+      // AppHomeScreen(),
       // ProductListScreen(),
       duration: 5000,
       imageSize: 130,
